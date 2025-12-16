@@ -375,3 +375,442 @@ header {
     letter-spacing: 2px;
     box-shadow: 0 0 30px rgba(39, 174, 96, 0.4);
 }
+
+/* Variáveis de Cores e Temas */
+:root {
+    --primary-color: #27ae60;
+    --neon-green: #00ff88;
+    --bg-body: #f4f7f6;
+    --bg-card: #ffffff;
+    --text-main: #333333;
+    --border-color: #dddddd;
+    --navbar-bg: #111111;
+    --danger: #ff4d4d;
+}
+
+/* Sobrescrita para Dark Mode */
+.dark-mode {
+    --bg-body: #0d0d0d;
+    --bg-card: #1a1a1a;
+    --text-main: #e0e0e0;
+    --border-color: #333333;
+    --primary-color: #00ff88;
+}
+
+/* Reset e Estrutura Geral */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-bg);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--neon-green);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    color: var(--neon-green);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -1px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu a {
+    color: #bbb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.menu a:hover, .menu a.active {
+    color: var(--neon-green);
+}
+
+.nav-dash {
+    border: 1px solid var(--neon-green);
+    padding: 6px 15px;
+    border-radius: 6px;
+    color: var(--neon-green) !important;
+}
+
+.nav-rh { color: #2ecc71 !important; font-weight: 700; }
+.nav-logout { color: var(--danger) !important; font-weight: 600; margin-left: 10px; }
+
+.separator {
+    height: 20px; width: 1px; background: #444; margin: 0 5px;
+}
+
+/* Containers e Cards */
+.main-container {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Alertas e Mensagens */
+.flash-message {
+    padding: 15px;
+    background: var(--primary-color);
+    color: #000;
+    font-weight: 600;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-left: 6px solid #111;
+}
+
+/* Estilos de Tabelas */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: rgba(0,0,0,0.05);
+    padding: 12px;
+    text-align: left;
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.dark-mode .table th { background: rgba(255,255,255,0.02); }
+
+.table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Botões Customizados */
+.btn-theme-toggle {
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-success {
+    background: var(--neon-green);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+/* Variáveis do Sistema */
+:root {
+    --neon-green: #00ff88;
+    --neon-hover: #00cc6d;
+    --bg-dark: #0d0d0d;
+    --card-dark: #1a1a1a;
+    --text-white: #eeeeee;
+    --text-muted: #888888;
+    --border-color: #333333;
+    --danger: #ff4444;
+}
+
+/* Reset e Body */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #111;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--neon-green);
+}
+
+.logo {
+    color: var(--neon-green);
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+/* Botões Uniformes e Elegantes */
+.btn-action {
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-main {
+    background-color: var(--neon-green);
+    color: #000;
+}
+
+.btn-main:hover {
+    background-color: var(--neon-hover);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid #333;
+    color: #eee;
+}
+
+.btn-outline:hover {
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+}
+
+.btn-clean {
+    background: #2d2d2d;
+    color: #aaa;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    border: 1px solid #444;
+}
+
+.btn-clean:hover {
+    background: #3d3d3d;
+    color: #fff;
+}
+
+/* Cards e Tabelas */
+.card {
+    background-color: var(--card-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-control-search {
+    width: 100%;
+    background: #111;
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.form-control-search:focus {
+    border-color: var(--neon-green);
+}
+
+/* RESET DE BOTÕES E LINKS DE AÇÃO */
+.btn-action, .btn-clean {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* AQUI ESTÁ O SEGREDO DA UNIFORMIDADE */
+    height: 42px;           /* Altura idêntica para todos */
+    border-radius: 8px;     /* Arredondamento idêntico para todos */
+    padding: 0 20px;        /* Espaçamento interno padronizado */
+    
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    box-sizing: border-box; /* Garante que a borda não aumente o tamanho */
+}
+
+/* BOTÃO PRINCIPAL (NOVO PRODUTO) */
+.btn-main {
+    background-color: var(--neon-green);
+    color: #000 !important;
+}
+
+.btn-main:hover {
+    background-color: var(--neon-hover);
+    transform: translateY(-2px);
+}
+
+/* BOTÃO SECUNDÁRIO (IMPORTAR XML) */
+.btn-outline {
+    background-color: transparent;
+    border-color: #444;
+    color: #fff !important;
+}
+
+.btn-outline:hover {
+    border-color: var(--neon-green);
+    color: var(--neon-green) !important;
+}
+
+/* BOTÃO LIMPAR (DENTRO DA BARRA DE BUSCA) */
+.btn-clean {
+    background: #2d2d2d;
+    border: 1px solid #444;
+    color: #aaa !important;
+    height: 45px; /* Ligeiramente maior para alinhar com o input de busca */
+}
+
+.btn-clean:hover {
+    background: #3d3d3d;
+    color: #fff !important;
+    border-color: #666;
+}
+
+/* Variáveis de Cores Controladas pelo Tema */
+:root {
+    --bg-body: #f4f7f6;      /* Fundo claro */
+    --bg-card: #ffffff;      /* Card branco */
+    --text-main: #1a1a1a;    /* Texto quase preto */
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    --neon-green: #27ae60;   /* Verde mais escuro para ler no branco */
+    --navbar-bg: #111111;    /* Navbar continua escura por estilo */
+}
+
+/* Quando a classe dark-mode está ativa no <html> */
+.dark-mode {
+    --bg-body: #0d0d0d;
+    --bg-card: #1a1a1a;
+    --text-main: #eeeeee;
+    --text-muted: #888888;
+    --border-color: #333333;
+    --neon-green: #00ff88;   /* Verde neon brilha no preto */
+}
+
+/* Aplicação Global */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.card {
+    background-color: var(--bg-card) !important; /* Força o card a seguir o tema */
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.table th {
+    background-color: var(--border-color);
+    color: var(--text-main);
+}
+
+.table td {
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+/* Estilo para códigos e badges */
+code {
+    background: var(--border-color);
+    color: var(--text-main);
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+/* Input de busca precisa mudar também */
+.form-control-search {
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Definições de Cores - MODO CLARO (Padrão) */
+:root {
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-navbar: #ffffff; /* Navbar branca no modo claro */
+    --text-main: #212529;
+    --text-menu: #495057;
+    --border-color: #dee2e6;
+    --neon-green: #28a745; /* Verde mais sóbrio para fundo claro */
+    --primary-btn: #28a745;
+}
+
+/* Definições de Cores - MODO ESCURO */
+.dark-mode {
+    --bg-body: #0d0d0d;
+    --bg-card: #1a1a1a;
+    --bg-navbar: #111111; /* Navbar escura no modo dark */
+    --text-main: #f8f9fa;
+    --text-menu: #adb5bd;
+    --border-color: #333333;
+    --neon-green: #00ff88; /* Verde Neon brilha no dark */
+    --primary-btn: #00ff88;
+}
+
+/* Aplicação das Variáveis */
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    transition: background 0.3s, color 0.3s;
+}
+
+.navbar {
+    background-color: var(--bg-navbar);
+    border-bottom: 2px solid var(--neon-green);
+    /* Removi a cor fixa preta daqui */
+}
+
+.menu a {
+    color: var(--text-menu);
+}
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.footer {
+    background-color: var(--bg-navbar);
+    color: var(--text-menu);
+    border-top: 1px solid var(--border-color);
+}
