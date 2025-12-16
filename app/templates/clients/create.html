@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h2 style="margin-bottom: 25px; color: var(--primary-color);">🤝 Novo Cliente</h2>
+        
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nome Completo ou Razão Social</label>
+                    <input type="text" name="name" class="form-control" placeholder="Ex: João da Silva ou Fazenda Montenegro LTDA" required>
+                </div>
+                <div class="form-group">
+                    <label>CPF / CNPJ</label>
+                    <input type="text" name="document" id="document" class="form-control" placeholder="000.000.000-00" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>E-mail (Opcional)</label>
+                    <input type="email" name="email" class="form-control" placeholder="cliente@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="text" name="phone" id="phone" class="form-control" placeholder="(51) 99999-9999">
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-light);">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CEP</label>
+                    <input type="text" name="cep" id="cep" class="form-control" onblur="buscaCEP()" placeholder="95720-000">
+                </div>
+                <div class="form-group">
+                    <label>Endereço / Rua</label>
+                    <input type="text" name="address" id="address" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="address-grid">
+                <div class="form-group">
+                    <label>Número</label>
+                    <input type="text" name="number" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Cidade</label>
+                    <input type="text" name="city" id="city" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label>UF</label>
+                    <input type="text" name="state" id="state" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button type="submit" class="btn-success">Finalizar Cadastro</button>
+                <a href="{{ url_for('client.list_clients') }}" style="margin-left: 20px; text-decoration: none; color: var(--text-light);">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Reaproveitamos sua lógica de CEP que funcionou bem nos usuários
+function buscaCEP() {
+    let cep = document.getElementById('cep').value.replace(/\D/g, '');
+    if (cep !== "") {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(res => res.json())
+            .then(dados => {
+                if (!dados.erro) {
+                    document.getElementById('address').value = dados.logradouro;
+                    document.getElementById('city').value = dados.localidade;
+                    document.getElementById('state').value = dados.uf;
+                }
+            });
+    }
+}
+</script>
+{% endblock %}

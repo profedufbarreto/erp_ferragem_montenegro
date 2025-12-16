@@ -3,8 +3,10 @@
 {% block content %}
 <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h1 style="font-weight: 800;">Estoque de Produtos</h1>
-        <a href="{{ url_for('inventory.import_xml') }}" class="btn-success">Importar XML</a>
+        <h1 style="font-weight: 800; color: var(--secondary-color);">📦 Estoque de Produtos</h1>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ url_for('inventory.import_xml') }}" class="btn-success" style="text-decoration: none;">Importar XML</a>
+        </div>
     </div>
 
     <div class="card">
@@ -13,9 +15,10 @@
                 <tr>
                     <th>EAN (Cód. Barras)</th>
                     <th>Descrição</th>
-                    <th>Preço Custo</th>
-                    <th>Preço Venda</th>
-                    <th>Qtd. Estoque</th>
+                    <th style="text-align: right;">Custo</th>
+                    <th style="text-align: right;">Venda</th>
+                    <th style="text-align: center;">Qtd.</th>
+                    <th style="text-align: center;">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,13 +26,32 @@
                 <tr>
                     <td><code>{{ product.code_ean }}</code></td>
                     <td style="font-weight: 600;">{{ product.description }}</td>
-                    <td>R$ {{ "%.2f"|format(product.cost_price) }}</td>
-                    <td style="color: var(--primary-color); font-weight: 700;">R$ {{ "%.2f"|format(product.sale_price) }}</td>
-                    <td>{{ product.stock_quantity }}</td>
+                    <td style="text-align: right;">R$ {{ "%.2f"|format(product.cost_price) }}</td>
+                    <td style="text-align: right; color: var(--primary-color); font-weight: 700;">
+                        R$ {{ "%.2f"|format(product.sale_price) }}
+                    </td>
+                    <td style="text-align: center; font-weight: 500;">
+                        {{ product.stock_quantity }} <small style="color: gray;">{{ product.unit or 'UN' }}</small>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="{{ url_for('inventory.edit_product', product_id=product.id) }}" 
+                           class="btn-edit" 
+                           style="text-decoration: none; color: #3498db; font-weight: 600; margin-right: 15px;">
+                           ✏️ Editar
+                        </a>
+                        <a href="{{ url_for('inventory.delete_product', product_id=product.id) }}" 
+                           class="btn-delete" 
+                           style="text-decoration: none; color: #e74c3c; font-weight: 600;"
+                           onclick="return confirm('Deseja realmente excluir este produto do estoque?')">
+                           🗑️ Excluir
+                        </a>
+                    </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px;">Nenhum produto cadastrado. Importe um XML para começar.</td>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: gray;">
+                        Nenhum produto cadastrado. Clique em <strong>Importar XML</strong> para começar.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 style="font-weight: 800; margin-bottom: 30px;">📊 Gestão de RH - AgroFerragem</h1>
+    
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Colaborador</th>
+                    <th>Tipo Sanguíneo</th>
+                    <th>Admissão</th>
+                    <th>Contato de Emergência</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td><strong>{{ emp.name }}</strong><br><small>{{ emp.position }}</small></td>
+                    <td><span style="color: #e74c3c; font-weight: bold;">{{ emp.blood_type or 'N/A' }}</span></td>
+                    
+                    <td>{{ emp.admission_date.strftime('%d-%m-%Y') if emp.admission_date else '-' }}</td>
+                    
+                    <td>
+                        {% if emp.emergency_contact %}
+                            <a href="https://wa.me/55{{ emp.emergency_contact | replace('(', '') | replace(')', '') | replace('-', '') | replace(' ', '') }}" 
+                               target="_blank" 
+                               style="text-decoration: none; color: #25D366; font-weight: 600;">
+                                🟢 WhatsApp 
+                                <span style="color: var(--text-color); font-weight: 400; font-size: 0.9em;">
+                                    ({{ emp.emergency_contact[:2] }}) {{ emp.emergency_contact[2:7] }}-{{ emp.emergency_contact[7:] }}
+                                </span>
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

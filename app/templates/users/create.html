@@ -1,111 +1,93 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-    <div class="card">
-        <h2 style="margin-bottom: 25px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px;">
-            Cadastrar Usuário / RH
+    <div class="card" style="max-width: 900px; margin: 0 auto;">
+        <h2 style="color: var(--primary-color); margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+            👤 Cadastro de Colaborador e RH
         </h2>
         
         <form method="POST">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" name="name" class="form-control" placeholder="Digite o nome completo" required>
+            <fieldset style="border: none; margin-bottom: 20px; padding: 0;">
+                <legend style="font-weight: 700; font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 15px;">Acesso ao Sistema</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Usuário (Login)</label>
+                        <input type="text" name="username" class="form-control" placeholder="ex: joao.montenegro" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" name="password" class="form-control" placeholder="******" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nível de Acesso</label>
+                        <select name="role" class="form-control">
+                            <option value="funcionario">Funcionário</option>
+                            <option value="gerente">Gerente</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>CPF</label>
-                    <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" required>
-                </div>
-            </div>
+            </fieldset>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Data de Nascimento</label>
-                    <input type="date" name="birth_date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Nível de Acesso (Tipo de Usuário)</label>
-                    <select name="role" class="form-control" required>
-                        <option value="funcionario">Funcionário</option>
-                        <option value="gerente">Gerente</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                </div>
-            </div>
+            <hr style="border-top: 1px solid var(--border-light); margin-bottom: 25px;">
 
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-light);">
+            <fieldset style="border: none; padding: 0;">
+                <legend style="font-weight: 700; font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 15px;">Informações de RH</legend>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" name="name" class="form-control" placeholder="Nome completo do colaborador" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" required>
+                    </div>
+                </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>CEP (Busca Automática)</label>
-                    <input type="text" name="cep" id="cep" class="form-control" onblur="buscaCEP()" placeholder="99999-999">
+                <div class="form-row" style="grid-template-columns: 2fr 1.5fr 1fr;">
+                    <div class="form-group">
+                        <label>Cargo / Função</label>
+                        <input type="text" name="position" class="form-control" placeholder="Ex: Balconista">
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Admissão</label>
+                        <input type="date" name="admission_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo Sanguíneo</label>
+                        <select name="blood_type" class="form-control">
+                            <option value="">N/A</option>
+                            <option value="A+">A+</option><option value="A-">A-</option>
+                            <option value="B+">B+</option><option value="B-">B-</option>
+                            <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                            <option value="O+">O+</option><option value="O-">O-</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Logradouro (Rua/Avenida)</label>
-                    <input type="text" name="address" id="address" class="form-control" readonly>
-                </div>
-            </div>
 
-            <div class="address-grid">
                 <div class="form-group">
-                    <label>Número/Edif.</label>
-                    <input type="text" name="number" class="form-control" placeholder="Ex: 123" required>
+                    <label>Contato de Emergência (WhatsApp)</label>
+                    <input type="text" name="emergency_contact" id="emergency_contact" class="form-control" 
+                           placeholder="51999999999" maxlength="11"
+                           title="Digite apenas números (DDD + Número)">
+                    <small style="color: var(--text-light);">Digite apenas números. O sistema formatará automaticamente.</small>
                 </div>
-                <div class="form-group">
-                    <label>Cidade</label>
-                    <input type="text" name="city" id="city" class="form-control" readonly>
-                </div>
-                <div class="form-group">
-                    <label>UF</label>
-                    <input type="text" name="state" id="state" class="form-control" readonly>
-                </div>
-            </div>
+            </fieldset>
 
-            <div class="form-group">
-                <label>Complemento / Observações (Apto, Bloco, Referência)</label>
-                <textarea name="obs" class="form-control" rows="2" placeholder="Ex: Apto 202, Bloco B"></textarea>
-            </div>
-
-            <div class="form-row" style="margin-top: 20px; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;">
-                <div class="form-group">
-                    <label>Usuário de Sistema</label>
-                    <input type="text" name="username" class="form-control" placeholder="ex: joao.montenegro" required>
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
-            </div>
-
-            <div style="margin-top: 30px;">
-                <button type="submit" class="btn-success" style="width: 200px;">Salvar Cadastro</button>
-                <a href="{{ url_for('admin.list_users') }}" style="margin-left: 20px; text-decoration: none; color: var(--text-light);">Cancelar</a>
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+                <button type="submit" class="btn-success" style="flex: 2;">Finalizar Cadastro de Colaborador</button>
+                <a href="{{ url_for('admin.list_users') }}" class="btn-secondary" style="flex: 1; text-align: center; text-decoration: none; padding: 12px; border-radius: 8px; background: #666; color: white;">Cancelar</a>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-function buscaCEP() {
-    let cep = document.getElementById('cep').value.replace(/\D/g, '');
-    if (cep !== "") {
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-            .then(res => res.json())
-            .then(dados => {
-                if (!dados.erro) {
-                    document.getElementById('address').value = dados.logradouro;
-                    document.getElementById('city').value = dados.localidade;
-                    document.getElementById('state').value = dados.uf;
-                } else {
-                    alert("CEP não encontrado.");
-                }
-            });
-    }
-}
-
-document.getElementById('cpf').addEventListener('input', function (e) {
-    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})/);
-    e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + (x[4] ? '-' + x[4] : '');
-});
+    const telInput = document.getElementById('emergency_contact');
+    telInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
+        e.target.value = value;
+    });
 </script>
 {% endblock %}
