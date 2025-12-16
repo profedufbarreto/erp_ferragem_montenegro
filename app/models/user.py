@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -6,13 +7,18 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('admin', 'gerente', 'funcionario'), default='funcionario')
-    
-    # Relacionamento 1 para 1 com Funcionário
     employee = db.relationship('Employee', backref='user', uselist=False)
 
 class Employee(db.Model):
     __tablename__ = 'employees'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    cpf = db.Column(db.String(14), unique=True)
+    cpf = db.Column(db.String(14), unique=True, nullable=False)
+    birth_date = db.Column(db.Date)
+    cep = db.Column(db.String(9))
+    address = db.Column(db.String(200))
+    number = db.Column(db.String(10))
+    city = db.Column(db.String(100))
+    state = db.Column(db.String(2))
+    obs = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

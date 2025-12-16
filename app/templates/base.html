@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html lang="pt-br" data-theme="light">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>ERP Montenegro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Ferragem Montenegro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <script>
+        // Executa antes da página carregar para evitar tela branca no modo escuro
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+        }
+    </script>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">Agro Montenegro</div>
-            <button id="theme-toggle">
-                <span id="theme-icon">🌙</span>
-            </button>
+        <nav class="navbar">
+            <div class="logo">ERP Montenegro</div>
+            <div class="menu">
+                <a href="{{ url_for('admin.list_users') }}">Usuários</a>
+                <a href="#">Vendas</a>
+                <a href="#">Estoque</a>
+                <button id="theme-toggle" class="btn-theme">🌓 Alternar Tema</button>
+                <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; margin-left: 20px;">Sair</a>
+            </div>
         </nav>
     </header>
 
@@ -19,6 +32,13 @@
         {% block content %}{% endblock %}
     </main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        const btn = document.getElementById('theme-toggle');
+        btn.onclick = () => {
+            document.documentElement.classList.toggle('dark-mode');
+            const isDark = document.documentElement.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+    </script>
 </body>
 </html>

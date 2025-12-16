@@ -4,7 +4,7 @@ from app import db
 
 auth_bp = Blueprint('auth', __name__)
 
-# Alteramos aqui para que a raiz do site seja o login
+# Redireciona a raiz do site para o login
 @auth_bp.route('/')
 def index():
     return redirect(url_for('auth.login'))
@@ -31,3 +31,10 @@ def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
     return render_template('dashboard/index.html')
+
+# ESSA É A FUNÇÃO QUE ESTAVA FALTANDO E CAUSANDO O ERRO:
+@auth_bp.route('/logout')
+def logout():
+    session.clear() # Limpa o login do navegador
+    flash('Você saiu do sistema.')
+    return redirect(url_for('auth.login'))

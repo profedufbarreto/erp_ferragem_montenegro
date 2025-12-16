@@ -1,6 +1,48 @@
-{% extends 'base.html' %}
-{% block title %}Usuários{% endblock %}
+{% extends "base.html" %}
+
 {% block content %}
-  <h2>Usuários</h2>
-  <p>Lista de usuários irá aparecer aqui.</p>
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1 style="font-weight: 800; color: var(--secondary-color);">Gerenciamento de Usuários</h1>
+        <a href="{{ url_for('admin.create_user') }}" class="btn-success" style="text-decoration: none;">+ Novo Usuário</a>
+    </div>
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome / Colaborador</th>
+                    <th>CPF</th>
+                    <th>Usuário</th>
+                    <th>Nível de Acesso</th>
+                    <th style="text-align: center;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td style="font-weight: 500;">{{ user.employee.name if user.employee else 'Admin Mestre' }}</td>
+                    <td>{{ user.employee.cpf if user.employee else '-' }}</td>
+                    <td><code style="background: rgba(0,0,0,0.05); padding: 2px 5px; border-radius: 4px;">{{ user.username }}</code></td>
+                    <td>
+                        <span class="badge {{ user.role }}">
+                            {{ user.role.upper() }}
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn-edit" style="color: var(--primary-color); font-weight: 600; text-decoration: none; margin-right: 15px;">Editar</a>
+                        
+                        {% if user.username != 'admin' %}
+                        <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" 
+                           class="btn-delete" 
+                           style="color: #e74c3c; font-weight: 600; text-decoration: none;"
+                           onclick="return confirm('Deseja realmente excluir este usuário e todos os seus dados de RH?')">Excluir</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

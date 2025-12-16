@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <h2>Cadastrar Usuário / RH</h2>
+        <form method="POST">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <label>Nome Completo</label>
+                    <input type="text" name="name" class="form-control" required>
+                    
+                    <label>CPF</label>
+                    <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" required>
+                    
+                    <label>Data de Nascimento</label>
+                    <input type="date" name="birth_date" class="form-control" required>
+                </div>
+
+                <div>
+                    <label>CEP (Busca Automática)</label>
+                    <input type="text" name="cep" id="cep" class="form-control" maxlength="9" onblur="buscaCEP()">
+                    
+                    <label>Logradouro</label>
+                    <input type="text" name="address" id="address" class="form-control" readonly>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;"><label>Nº</label><input type="text" name="number" class="form-control"></div>
+                        <div style="flex: 2;"><label>Cidade</label><input type="text" name="city" id="city" class="form-control" readonly></div>
+                        <div style="flex: 1;"><label>UF</label><input type="text" name="state" id="state" class="form-control" readonly></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div><label>Usuário</label><input type="text" name="username" class="form-control" required></div>
+                <div><label>Senha</label><input type="password" name="password" class="form-control" required></div>
+                <div>
+                    <label>Nível</label>
+                    <select name="role" class="form-control">
+                        <option value="funcionario">Funcionário</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            
+            <label>Observações</label>
+            <textarea name="obs" class="form-control"></textarea>
+
+            <button type="submit" class="btn-success" style="margin-top: 20px;">Salvar Colaborador</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function buscaCEP() {
+    let cep = document.getElementById('cep').value.replace(/\D/g, '');
+    if (cep !== "") {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(res => res.json())
+            .then(dados => {
+                if (!dados.erro) {
+                    document.getElementById('address').value = dados.logradouro;
+                    document.getElementById('city').value = dados.localidade;
+                    document.getElementById('state').value = dados.uf;
+                }
+            });
+    }
+}
+// Máscara simples para CPF
+document.getElementById('cpf').addEventListener('input', function (e) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})/);
+    e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + (x[4] ? '-' + x[4] : '');
+});
+</script>
+{% endblock %}
