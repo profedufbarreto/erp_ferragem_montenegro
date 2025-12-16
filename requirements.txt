@@ -1,0 +1,8 @@
+Flask>=2.0
+# Add your DB driver/ORM as needed, for example:
+# Flask-MySQLdb
+# Flask-SQLAlchemy
+flask
+flask-sqlalchemy
+mysql-connector-python
+python-dotenv

@@ -1,0 +1,18 @@
+from app import db
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.Enum('admin', 'gerente', 'funcionario'), default='funcionario')
+    
+    # Relacionamento 1 para 1 com Funcionário
+    employee = db.relationship('Employee', backref='user', uselist=False)
+
+class Employee(db.Model):
+    __tablename__ = 'employees'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    cpf = db.Column(db.String(14), unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
