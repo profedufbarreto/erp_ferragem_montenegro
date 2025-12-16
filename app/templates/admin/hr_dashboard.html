@@ -11,29 +11,40 @@
                     <th>Tipo Sanguíneo</th>
                     <th>Admissão</th>
                     <th>Contato de Emergência</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for emp in employees %}
                 <tr>
-                    <td><strong>{{ emp.name }}</strong><br><small>{{ emp.position }}</small></td>
-                    <td><span style="color: #e74c3c; font-weight: bold;">{{ emp.blood_type or 'N/A' }}</span></td>
-                    
-                    <td>{{ emp.admission_date.strftime('%d-%m-%Y') if emp.admission_date else '-' }}</td>
-                    
+                    <td>
+                        <strong>{{ emp.name }}</strong><br>
+                        <small style="color: #888;">{{ emp.position if emp.position else 'Cargo não definido' }}</small>
+                    </td>
+                    <td>
+                        <span style="color: #e74c3c; font-weight: bold;">
+                            {{ emp.blood_type if emp.blood_type else 'N/A' }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ emp.admission_date.strftime('%d-%m-%Y') if emp.admission_date else '-' }}
+                    </td>
                     <td>
                         {% if emp.emergency_contact %}
                             <a href="https://wa.me/55{{ emp.emergency_contact | replace('(', '') | replace(')', '') | replace('-', '') | replace(' ', '') }}" 
                                target="_blank" 
                                style="text-decoration: none; color: #25D366; font-weight: 600;">
-                                🟢 WhatsApp 
-                                <span style="color: var(--text-color); font-weight: 400; font-size: 0.9em;">
-                                    ({{ emp.emergency_contact[:2] }}) {{ emp.emergency_contact[2:7] }}-{{ emp.emergency_contact[7:] }}
-                                </span>
+                               🟢 WhatsApp ({{ emp.emergency_contact }})
                             </a>
                         {% else %}
                             -
                         {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_employee', employee_id=emp.id) }}" 
+                           style="text-decoration: none; color: #3498db; font-weight: 600;">
+                           ✏️ Editar RH
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}

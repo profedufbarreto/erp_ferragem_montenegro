@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 600px; margin: 20px auto; padding: 25px;">
+        <h2 style="color: var(--primary-color); margin-bottom: 20px;">✏️ Editar RH: {{ emp.name }}</h2>
+        
+        <form method="POST">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Nome Completo</label>
+                <input type="text" name="name" class="form-control" value="{{ emp.name }}" required>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Cargo / Função</label>
+                <input type="text" name="position" class="form-control" value="{{ emp.position or '' }}">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Tipo Sanguíneo</label>
+                <select name="blood_type" class="form-control">
+                    <option value="" {% if not emp.blood_type %}selected{% endif %}>Selecione...</option>
+                    {% for tipo in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}
+                    <option value="{{ tipo }}" {% if emp.blood_type == tipo %}selected{% endif %}>{{ tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Data de Admissão</label>
+                <input type="date" name="admission_date" class="form-control" 
+                       value="{{ emp.admission_date.strftime('%Y-%m-%d') if emp.admission_date else '' }}">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>WhatsApp de Emergência</label>
+                <input type="text" name="emergency_contact" class="form-control" value="{{ emp.emergency_contact or '' }}">
+            </div>
+
+            <button type="submit" class="btn-success" style="width: 100%; padding: 12px; font-weight: bold;">
+                💾 Salvar Alterações no RH
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
