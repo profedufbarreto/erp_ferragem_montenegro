@@ -6,11 +6,11 @@ class Product(db.Model):
     __table_args__ = {'extend_existing': True} 
 
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(20), unique=True, nullable=False) # Aceita EAN ou 001
+    code = db.Column(db.String(20), unique=True, nullable=False) # Aceita EAN de 13 dígitos
     name = db.Column(db.String(100), nullable=False)
-    cost_price = db.Column(db.Numeric(10, 2), default=0.00)  # Preço de Custo
-    price = db.Column(db.Numeric(10, 2), nullable=False, default=0.00) # Preço de Venda
-    discount = db.Column(db.Float, default=0.0) # Percentual de desconto
+    cost_price = db.Column(db.Numeric(10, 2), default=0.00)
+    price = db.Column(db.Numeric(10, 2), nullable=False, default=0.00)
+    discount = db.Column(db.Float, default=0.0) 
     stock = db.Column(db.Integer, default=0)
     category = db.Column(db.String(50))
     unit = db.Column(db.String(10), default='UN')
@@ -19,7 +19,7 @@ class Product(db.Model):
 
     @property
     def final_price(self):
-        """Calcula o preço com desconto para o PDV"""
+        """Preço calculado para venda após o desconto"""
         if self.discount > 0:
             return float(self.price) * (1 - (self.discount / 100))
         return float(self.price)

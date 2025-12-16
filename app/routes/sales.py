@@ -11,22 +11,15 @@ def pos():
 @sales_bp.route('/buscar')
 def search_product():
     query = request.args.get('q', '')
-    if not query:
-        return jsonify({'error': 'Vazio'}), 400
-        
-    product = Product.query.filter(
-        (Product.code == query) | (Product.name.ilike(f"%{query}%"))
-    ).first()
-    
+    product = Product.query.filter((Product.code == query) | (Product.name.ilike(f'%{query}%'))).first()
     if product:
         return jsonify({
             'code': product.code,
             'name': product.name,
-            'price': product.final_price, # Já envia o preço com desconto
-            'original_price': float(product.price),
+            'price': float(product.final_price),
             'stock': product.stock
         })
-    return jsonify({'error': 'Produto não encontrado'}), 404
+    return jsonify({'error': 'Não encontrado'}), 404
 
 @sales_bp.route('/finalizar', methods=['POST'])
 def finalize_sale():
@@ -38,8 +31,10 @@ def finalize_sale():
             p = Product.query.filter_by(code=item['code']).first()
             if p:
                 if p.stock < item['qty']:
-                    return jsonify({'error': f'Estoque insuficiente para {p.name}'}), 400
-                p.stock -= int(item['qty']) # BAIXA NO ESTOQUE
+                    return jsonify({'error': f'Estoque insuficiente para: {p.name}'}), 400
+                
+                # AQUI ACONTECE A BAIXA
+                p.stock -= int(item['qty'])
         
         db.session.commit()
         return jsonify({'success': True})

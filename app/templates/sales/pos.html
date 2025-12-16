@@ -4,11 +4,17 @@
     <div class="pos-container">
         
         <div class="pos-cart card">
-            <div class="pos-search-box">
+            <div class="pos-search-box" style="position: relative;">
                 <label>🔍 Buscar Produto (Código ou Nome)</label>
                 <input type="text" id="product-search" class="form-control" 
-                       placeholder="Ex: 001 ou Martelo..." 
-                       onkeypress="if(event.key === 'Enter') searchProduct()">
+                       placeholder="Digite: martelo, 001, etc..." 
+                       autocomplete="off"
+                       onkeypress="if(event.key === 'Enter') selectFirstResult()">
+                
+                <div id="search-results" style="position: absolute; width: 100%; background: var(--card-light); 
+                     z-index: 1000; border: 1px solid var(--border-light); display: none; 
+                     box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-radius: 0 0 10px 10px;">
+                </div>
             </div>
 
             <table class="table table-pos">
@@ -17,13 +23,12 @@
                         <th>CÓD</th>
                         <th>PRODUTO</th>
                         <th style="width: 80px;">QTD</th>
-                        <th>VALOR UNIT.</th>
+                        <th>UNIT.</th>
                         <th>SUBTOTAL</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="cart-items">
-                    </tbody>
+                <tbody id="cart-items"></tbody>
             </table>
         </div>
 
@@ -58,7 +63,7 @@
             </div>
 
             <button class="btn-finalize" onclick="finalizeSale()">
-                FINALIZAR VENDA
+                FINALIZAR VENDA (BAIXAR ESTOQUE)
             </button>
         </div>
     </div>
@@ -66,21 +71,58 @@
 
 <script>
 let cart = [];
+const searchInput = document.getElementById('product-search');
+const resultsDiv = document.getElementById('search-results');
 
-function searchProduct() {
-    let q = document.getElementById('product-search').value;
-    fetch(`/vendas/buscar?q=${q}`)
+// --- BUSCA DINÂMICA (SUGESTÕES AO DIGITAR) ---
+searchInput.addEventListener('input', function() {
+    const query = this.value;
+    if (query.length < 2) {
+        resultsDiv.style.display = 'none';
+        return;
+    }
+
+    fetch(`/inventory/api/search?q=${query}`)
         .then(res => res.json())
         .then(data => {
-            if(data.error) alert("Produto não cadastrado!");
-            else {
-                let found = cart.find(i => i.code === data.code);
-                if(found) found.qty++;
-                else cart.push({...data, qty: 1});
-                renderCart();
-                document.getElementById('product-search').value = '';
+            if (data.length > 0) {
+                resultsDiv.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.style.padding = '12px';
+                    div.style.cursor = 'pointer';
+                    div.style.borderBottom = '1px solid var(--border-light)';
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; color:var(--text-light);">
+                            <span><strong>${item.code}</strong> - ${item.name}</span>
+                            <span>R$ ${item.price.toFixed(2)}</span>
+                        </div>
+                    `;
+                    div.onclick = () => addToCart(item);
+                    resultsDiv.appendChild(div);
+                });
+                resultsDiv.style.display = 'block';
+            } else {
+                resultsDiv.style.display = 'none';
             }
         });
+});
+
+function addToCart(product) {
+    let found = cart.find(i => i.code === product.code);
+    if (found) {
+        found.qty++;
+    } else {
+        cart.push({ ...product, qty: 1 });
+    }
+    renderCart();
+    resultsDiv.style.display = 'none';
+    searchInput.value = '';
+}
+
+function selectFirstResult() {
+    const first = resultsDiv.querySelector('div');
+    if (first) first.click();
 }
 
 function renderCart() {
@@ -98,14 +140,12 @@ function renderCart() {
             <td><button onclick="remove(${idx})" class="btn-theme" style="background:#ff4d4d">X</button></td>
         </tr>`;
     });
-    
     document.getElementById('cart-items').innerHTML = html;
 
-    // Juros de 4% (0.04) por parcela
     let method = document.getElementById('payment-method').value;
-    if(method === 'credito') {
+    if (method === 'credito') {
         let inst = parseInt(document.getElementById('installments').value) || 1;
-        if(inst > 1) total = total * (1 + (0.04 * inst));
+        if (inst > 1) total = total * (1 + (0.04 * inst));
     }
 
     document.getElementById('final-total').innerText = `R$ ${total.toFixed(2)}`;
@@ -123,10 +163,41 @@ function updateUI() {
 }
 
 function calcChange() {
-    let t = parseFloat(document.getElementById('final-total').innerText.replace('R$ ',''));
+    let totalText = document.getElementById('final-total').innerText.replace('R$ ', '').replace(',', '.');
+    let t = parseFloat(totalText);
     let r = parseFloat(document.getElementById('cash-in').value) || 0;
     let change = r - t;
     document.getElementById('change-display').innerText = `R$ ${change > 0 ? change.toFixed(2) : '0,00'}`;
 }
+
+// --- FINALIZAR E BAIXAR ESTOQUE ---
+function finalizeSale() {
+    if (cart.length === 0) return alert("Adicione produtos primeiro!");
+
+    if (!confirm("Confirmar venda e baixar estoque?")) return;
+
+    fetch('/vendas/finalizar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart: cart })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("✅ Venda realizada! Estoque atualizado.");
+            cart = [];
+            renderCart();
+            document.getElementById('cash-in').value = '';
+        } else {
+            alert("❌ Erro: " + data.error);
+        }
+    })
+    .catch(err => alert("Erro ao conectar com o servidor"));
+}
+
+// Fecha sugestões ao clicar fora
+document.addEventListener('click', (e) => {
+    if (e.target !== searchInput) resultsDiv.style.display = 'none';
+});
 </script>
 {% endblock %}
