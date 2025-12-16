@@ -814,3 +814,36 @@ body {
     color: var(--text-menu);
     border-top: 1px solid var(--border-color);
 }
+
+/* Variáveis Adicionais para o Dashboard */
+:root {
+    --chart-bg: #e9ecef;        /* Fundo das barrinhas no modo claro */
+    --stat-value: #1a1a1a;      /* Cor dos números grandes */
+    --card-shadow: rgba(0,0,0,0.05);
+}
+
+.dark-mode {
+    --chart-bg: #333333;        /* Fundo das barrinhas no modo escuro */
+    --stat-value: #ffffff;      /* Números brilham no escuro */
+    --card-shadow: rgba(0,0,0,0.5);
+}
+
+/* Aplicando nos Cards */
+.card {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    box-shadow: 0 4px 15px var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+h2, h3, h4, span, td {
+    color: var(--text-main); /* Garante que todo texto siga o tema */
+}
+
+/* Ajuste das Barras de Progresso do Dashboard */
+.progress-bar-bg {
+    background-color: var(--chart-bg);
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}

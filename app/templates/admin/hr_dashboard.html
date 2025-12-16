@@ -1,50 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
-    <h1 style="font-weight: 800; margin-bottom: 30px;">📊 Gestão de RH - AgroFerragem</h1>
-    
-    <div class="card">
+<div class="container" style="margin-top: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h1 style="color: var(--neon-green); font-weight: 800; margin: 0;">📋 Quadro de Colaboradores (RH)</h1>
+        <a href="{{ url_for('admin.create_user') }}" class="btn-action btn-main">➕ Novo Colaborador</a>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Colaborador</th>
-                    <th>Tipo Sanguíneo</th>
-                    <th>Admissão</th>
-                    <th>Contato de Emergência</th>
-                    <th>Ações</th>
+                    <th>Nome</th>
+                    <th>Cargo</th>
+                    <th>CPF</th>
+                    <th style="text-align: center;">Admissão</th>
+                    <th style="text-align: center;">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for emp in employees %}
                 <tr>
-                    <td>
-                        <strong>{{ emp.name }}</strong><br>
-                        <small style="color: #888;">{{ emp.position if emp.position else 'Cargo não definido' }}</small>
+                    <td style="font-weight: 600;">{{ emp.name }}</td>
+                    <td><small class="text-muted">{{ emp.position or '---' }}</small></td>
+                    <td>{{ emp.cpf }}</td>
+                    <td style="text-align: center;">
+                        {{ emp.admission_date.strftime('%d/%m/%Y') if emp.admission_date else '---' }}
                     </td>
-                    <td>
-                        <span style="color: #e74c3c; font-weight: bold;">
-                            {{ emp.blood_type if emp.blood_type else 'N/A' }}
-                        </span>
+                    <td style="text-align: center;">
+                        <a href="{{ url_for('admin.edit_user', user_id=emp.user_id) }}" title="Editar Cadastro Completo" style="text-decoration: none; margin-right: 15px;">✏️</a>
+                        <a href="{{ url_for('admin.delete_user', user_id=emp.user_id) }}" style="text-decoration: none;" onclick="return confirm('Excluir colaborador e acesso?')">🗑️</a>
                     </td>
-                    <td>
-                        {{ emp.admission_date.strftime('%d-%m-%Y') if emp.admission_date else '-' }}
-                    </td>
-                    <td>
-                        {% if emp.emergency_contact %}
-                            <a href="https://wa.me/55{{ emp.emergency_contact | replace('(', '') | replace(')', '') | replace('-', '') | replace(' ', '') }}" 
-                               target="_blank" 
-                               style="text-decoration: none; color: #25D366; font-weight: 600;">
-                               🟢 WhatsApp ({{ emp.emergency_contact }})
-                            </a>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('admin.edit_employee', employee_id=emp.id) }}" 
-                           style="text-decoration: none; color: #3498db; font-weight: 600;">
-                           ✏️ Editar RH
-                        </a>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        Nenhum colaborador registrado.
                     </td>
                 </tr>
                 {% endfor %}

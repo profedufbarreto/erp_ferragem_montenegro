@@ -5,35 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERP - AgroFerragem Montenegro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    
     <script>
-        // Aplica o tema salvo antes mesmo da página carregar (evita o flash branco)
         const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-        } else {
-            document.documentElement.classList.remove('dark-mode');
-        }
+        if (savedTheme === 'dark') { document.documentElement.classList.add('dark-mode'); }
     </script>
 </head>
 <body>
     <header class="header-main">
         <nav class="navbar">
-            <div class="logo">ERP MONTENEGRO</div>
+            <div class="logo">ERP - AgroFerragem Montenegro</div>
             <div class="menu">
                 <a href="{{ url_for('inventory.inventory_dashboard') }}" class="nav-dash">📊 Dashboard</a>
                 <a href="{{ url_for('inventory.list_products') }}" class="nav-item">Estoque</a>
                 <a href="{{ url_for('sales.pos') }}" class="nav-item">🛒 Vendas</a>
-                <a href="{{ url_for('client.list_clients') }}" class="nav-item">Clientes</a>
-
+                
                 {% if session.get('user_role') in ['admin', 'gerente'] %}
+                    <a href="{{ url_for('admin.list_users') }}" class="nav-item">👥 Usuários</a>
                     <a href="{{ url_for('admin.hr_dashboard') }}" class="nav-rh">RH</a>
                 {% endif %}
                 
                 <div class="separator"></div>
-
                 <button id="theme-toggle" class="btn-theme-toggle" title="Alternar Tema">🌓</button>
                 <a href="{{ url_for('auth.logout') }}" class="nav-logout">Sair</a>
             </div>
@@ -44,9 +36,7 @@
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}
-              <div class="flash-message">
-                <strong>Aviso:</strong> {{ message }}
-              </div>
+              <div class="flash-message"><strong>Aviso:</strong> {{ message }}</div>
             {% endfor %}
           {% endif %}
         {% endwith %}
@@ -56,24 +46,17 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        &copy; 2025 AgroFerragem Montenegro - Sistema de Gestão Interna
-    </footer>
+    <footer class="footer">&copy; 2025 AgroFerragem Montenegro - Gestão Interna</footer>
 
     <script>
         const btn = document.getElementById('theme-toggle');
-        
         btn.onclick = () => {
             const isDark = document.documentElement.classList.toggle('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         };
-
-        // Marca o link ativo dinamicamente
         const currentUrl = window.location.pathname;
         document.querySelectorAll('.menu a').forEach(link => {
-            if (link.getAttribute('href') === currentUrl) {
-                link.classList.add('active');
-            }
+            if (link.getAttribute('href') === currentUrl) { link.classList.add('active'); }
         });
     </script>
 </body>
