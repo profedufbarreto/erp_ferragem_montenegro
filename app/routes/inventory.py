@@ -35,21 +35,22 @@ def import_xml():
                 prod_data = item.find('nfe:prod', ns)
                 ean = prod_data.find('nfe:cEAN', ns).text
                 desc = prod_data.find('nfe:xProd', ns).text
-                qtd = float(prod_data.find('nfe:qCom', ns).text)
+                qtd = int(float(prod_data.find('nfe:qCom', ns).text))
                 v_unit = float(prod_data.find('nfe:vUnCom', ns).text)
 
-                product = Product.query.filter_by(code_ean=ean).first()
+                # Busca pelo código (EAN)
+                product = Product.query.filter_by(code=ean).first()
                 
                 if product:
-                    product.stock_quantity += qtd
+                    product.stock += qtd
                     product.cost_price = v_unit
                 else:
                     new_product = Product(
-                        code_ean=ean,
-                        description=desc,
-                        stock_quantity=qtd,
+                        code=ean,
+                        name=desc,
+                        stock=qtd,
                         cost_price=v_unit,
-                        sale_price=v_unit * 1.5
+                        price=v_unit * 1.5 # Markup padrão de 50%
                     )
                     db.session.add(new_product)
 
@@ -64,23 +65,24 @@ def import_xml():
             
     return render_template('inventory/import.html')
 
-# 3. EDIÇÃO DE PRODUTO (Para ajustar preço de venda manualmente)
+# 3. EDIÇÃO DE PRODUTO
 @inventory_bp.route('/products/edit/<int:product_id>', methods=['GET', 'POST'])
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
     
     if request.method == 'POST':
         try:
-            product.description = request.form.get('description')
-            product.code_ean = request.form.get('code_ean')
+            product.name = request.form.get('name')
+            product.code = request.form.get('code')
             product.cost_price = float(request.form.get('cost_price'))
-            product.sale_price = float(request.form.get('sale_price'))
-            product.stock_quantity = float(request.form.get('stock_quantity'))
+            product.price = float(request.form.get('price'))
+            product.stock = int(request.form.get('stock'))
+            product.discount = float(request.form.get('discount') or 0)
             product.category = request.form.get('category')
             product.unit = request.form.get('unit')
 
             db.session.commit()
-            flash(f"Produto '{product.description}' atualizado com sucesso!")
+            flash(f"Produto '{product.name}' atualizado com sucesso!")
             return redirect(url_for('inventory.list_products'))
         except Exception as e:
             db.session.rollback()

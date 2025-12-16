@@ -26,7 +26,7 @@
                 
                 <a href="{{ url_for('client.list_clients') }}">Clientes</a>
                 <a href="{{ url_for('inventory.list_products') }}">Estoque</a>
-                <a href="#">Vendas</a>
+                <a href="{{ url_for('sales.pos') }}">🛒 Vendas</a>
                 
                 <button id="theme-toggle" class="btn-theme" title="Alternar Tema">🌓</button>
                 <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; margin-left: 20px; font-weight: 600; text-decoration: none;">Sair</a>

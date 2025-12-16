@@ -253,3 +253,125 @@ header {
     border: 1px solid #444;
     background-color: #2b2b2b;
 }
+
+/* --- AJUSTE GERAL DE TABELAS --- */
+.table th {
+    text-align: left;
+    padding: 15px;
+    background: var(--secondary-color); /* Usando o azul escuro para o fundo */
+    color: #ffffff !important; /* Texto sempre branco no cabeçalho */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    border-bottom: 3px solid var(--primary-color); /* Linha verde apenas como detalhe inferior */
+}
+
+/* --- ESTILO GERAL DE TABELAS REVISADO --- */
+.table th {
+    text-align: left;
+    padding: 18px 15px;
+    background: #1a1c1e; /* Fundo grafite profundo para leitura perfeita */
+    color: var(--primary-color) !important; /* Texto Verde Agro em destaque */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.dark-mode .table td {
+    border-bottom: 1px solid #2a2e33;
+    color: #cbd5e0;
+}
+
+/* --- MÓDULO DE VENDAS (PDV) ELEGANTE --- */
+.pos-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.pos-cart {
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-light);
+    background: var(--card-light);
+}
+
+/* Caixa de Busca com Foco Neon */
+.pos-search-box input {
+    font-size: 1.3rem;
+    padding: 18px 25px;
+    border: 2px solid var(--border-light);
+    border-radius: 15px;
+    background: var(--bg-light);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pos-search-box input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(39, 174, 96, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Checkout Lateral Estilo "Painel de Comando" */
+.pos-checkout {
+    position: sticky;
+    top: 20px;
+    background: #1a1c1e !important; /* Sempre escuro para elegância */
+    color: white !important;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.total-display {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.total-display .value {
+    font-size: 3.8rem;
+    font-weight: 900;
+    color: #2ecc71; /* Verde esmeralda brilhante */
+    text-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+    line-height: 1;
+}
+
+/* Customização dos Inputs dentro do Checkout */
+.payment-methods select, 
+.payment-methods input {
+    background: #000000 !important;
+    border: 1px solid #333 !important;
+    color: #2ecc71 !important;
+    font-weight: 600;
+}
+
+.change-box {
+    background: rgba(241, 196, 15, 0.1);
+    border-left: 5px solid #f1c40f;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.change-box h3 {
+    color: #f1c40f;
+    margin: 0;
+}
+
+/* Botão de Finalizar com Efeito de Pulso */
+.btn-finalize {
+    background: linear-gradient(135deg, var(--primary-color), #219150);
+    border-radius: 12px;
+    height: 70px;
+    transition: all 0.3s ease;
+}
+
+.btn-finalize:hover {
+    letter-spacing: 2px;
+    box-shadow: 0 0 30px rgba(39, 174, 96, 0.4);
+}

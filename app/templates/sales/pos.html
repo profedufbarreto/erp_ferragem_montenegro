@@ -1,7 +1,132 @@
-{% extends 'base.html' %}
-{% block title %}PDV{% endblock %}
+{% extends "base.html" %}
 {% block content %}
-  <h2>PDV / Caixa</h2>
-  <div id="pos-root">Interface do caixa aqui.</div>
-  <script src="/static/js/sales.js"></script>
+<div class="container">
+    <div class="pos-container">
+        
+        <div class="pos-cart card">
+            <div class="pos-search-box">
+                <label>🔍 Buscar Produto (Código ou Nome)</label>
+                <input type="text" id="product-search" class="form-control" 
+                       placeholder="Ex: 001 ou Martelo..." 
+                       onkeypress="if(event.key === 'Enter') searchProduct()">
+            </div>
+
+            <table class="table table-pos">
+                <thead>
+                    <tr>
+                        <th>CÓD</th>
+                        <th>PRODUTO</th>
+                        <th style="width: 80px;">QTD</th>
+                        <th>VALOR UNIT.</th>
+                        <th>SUBTOTAL</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="pos-checkout card">
+            <div class="total-display">
+                <h5>Total da Venda</h5>
+                <span class="value" id="final-total">R$ 0,00</span>
+            </div>
+
+            <div class="payment-methods">
+                <label>Forma de Pagamento</label>
+                <select id="payment-method" class="form-control" onchange="updateUI()">
+                    <option value="dinheiro">Dinheiro (Espécie)</option>
+                    <option value="pix">PIX</option>
+                    <option value="debito">Cartão Débito</option>
+                    <option value="credito">Cartão Crédito</option>
+                </select>
+
+                <div id="credit-options" style="display:none;">
+                    <label>Parcelas (+4% por parcela)</label>
+                    <input type="number" id="installments" class="form-control" value="1" min="1" onchange="renderCart()">
+                </div>
+
+                <div id="cash-options">
+                    <label>Valor Pago</label>
+                    <input type="number" id="cash-in" class="form-control" placeholder="0,00" oninput="calcChange()">
+                    <div class="change-box">
+                        <small>Troco:</small>
+                        <h3 id="change-display">R$ 0,00</h3>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-finalize" onclick="finalizeSale()">
+                FINALIZAR VENDA
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+let cart = [];
+
+function searchProduct() {
+    let q = document.getElementById('product-search').value;
+    fetch(`/vendas/buscar?q=${q}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.error) alert("Produto não cadastrado!");
+            else {
+                let found = cart.find(i => i.code === data.code);
+                if(found) found.qty++;
+                else cart.push({...data, qty: 1});
+                renderCart();
+                document.getElementById('product-search').value = '';
+            }
+        });
+}
+
+function renderCart() {
+    let html = '';
+    let total = 0;
+    cart.forEach((item, idx) => {
+        let sub = item.price * item.qty;
+        total += sub;
+        html += `<tr>
+            <td><b>${item.code}</b></td>
+            <td>${item.name}</td>
+            <td><input type="number" value="${item.qty}" onchange="updateQty(${idx}, this.value)" class="form-control" style="margin:0; padding:5px;"></td>
+            <td>R$ ${item.price.toFixed(2)}</td>
+            <td>R$ ${sub.toFixed(2)}</td>
+            <td><button onclick="remove(${idx})" class="btn-theme" style="background:#ff4d4d">X</button></td>
+        </tr>`;
+    });
+    
+    document.getElementById('cart-items').innerHTML = html;
+
+    // Juros de 4% (0.04) por parcela
+    let method = document.getElementById('payment-method').value;
+    if(method === 'credito') {
+        let inst = parseInt(document.getElementById('installments').value) || 1;
+        if(inst > 1) total = total * (1 + (0.04 * inst));
+    }
+
+    document.getElementById('final-total').innerText = `R$ ${total.toFixed(2)}`;
+    calcChange();
+}
+
+function updateQty(idx, val) { cart[idx].qty = parseInt(val); renderCart(); }
+function remove(idx) { cart.splice(idx, 1); renderCart(); }
+
+function updateUI() {
+    let m = document.getElementById('payment-method').value;
+    document.getElementById('cash-options').style.display = m === 'dinheiro' ? 'block' : 'none';
+    document.getElementById('credit-options').style.display = m === 'credito' ? 'block' : 'none';
+    renderCart();
+}
+
+function calcChange() {
+    let t = parseFloat(document.getElementById('final-total').innerText.replace('R$ ',''));
+    let r = parseFloat(document.getElementById('cash-in').value) || 0;
+    let change = r - t;
+    document.getElementById('change-display').innerText = `R$ ${change > 0 ? change.toFixed(2) : '0,00'}`;
+}
+</script>
 {% endblock %}
