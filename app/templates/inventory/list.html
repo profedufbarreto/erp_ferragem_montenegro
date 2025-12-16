@@ -3,7 +3,10 @@
 <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h1 style="font-weight: 800; color: var(--secondary-color);">📦 Estoque de Produtos</h1>
-        <a href="{{ url_for('inventory.import_xml') }}" class="btn-success" style="text-decoration: none; width: auto; padding: 10px 20px;">Importar XML</a>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ url_for('inventory.import_xml') }}" class="btn-success" style="text-decoration: none; width: auto; padding: 10px 20px;">Importar XML</a>
+            <a href="{{ url_for('inventory.add_product') }}" class="btn-theme" style="text-decoration: none; background: var(--primary-color); padding: 10px 20px;">➕ Novo Produto</a>
+        </div>
     </div>
 
     <div class="card" style="margin-bottom: 20px; padding: 15px; position: relative;">
@@ -28,7 +31,7 @@
                 <tr>
                     <th>Cód / EAN</th>
                     <th>Descrição</th>
-                    <th style="text-align: right;">Custo</th>
+                    <th style="text-align: center;">NCM</th> <th style="text-align: center;">CFOP</th> <th style="text-align: right;">Custo</th>
                     <th style="text-align: right;">Venda Base</th>
                     <th style="text-align: center;">Desc. (%)</th>
                     <th style="text-align: right;">Preço Final</th>
@@ -41,6 +44,10 @@
                 <tr {% if product.stock <= 5 %}style="background: rgba(231, 76, 60, 0.05);"{% endif %}>
                     <td><code>{{ product.code }}</code></td>
                     <td style="font-weight: 600;">{{ product.name }}</td>
+                    
+                    <td style="text-align: center;"><small class="text-muted">{{ product.ncm or '---' }}</small></td>
+                    <td style="text-align: center;"><small class="text-muted">{{ product.cfop or '---' }}</small></td>
+                    
                     <td style="text-align: right;">R$ {{ "%.2f"|format(product.cost_price or 0) }}</td>
                     <td style="text-align: right;">R$ {{ "%.2f"|format(product.price or 0) }}</td>
                     <td style="text-align: center; color: #e67e22;">{{ product.discount or 0 }}%</td>
@@ -56,7 +63,7 @@
                     </td>
                 </tr>
                 {% else %}
-                <tr><td colspan="8" style="text-align: center; padding: 40px;">Nenhum produto encontrado.</td></tr>
+                <tr><td colspan="10" style="text-align: center; padding: 40px;">Nenhum produto encontrado.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -105,7 +112,6 @@ input.addEventListener('input', function() {
         });
 });
 
-// Fecha a lista ao clicar fora
 document.addEventListener('click', (e) => {
     if (e.target !== input) resultsDiv.style.display = 'none';
 });
@@ -113,5 +119,6 @@ document.addEventListener('click', (e) => {
 
 <style>
 .search-item-hover:hover { background: rgba(39, 174, 96, 0.1); }
+.text-muted { color: #888; font-size: 0.85em; }
 </style>
 {% endblock %}

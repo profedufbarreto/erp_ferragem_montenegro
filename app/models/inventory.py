@@ -6,7 +6,7 @@ class Product(db.Model):
     __table_args__ = {'extend_existing': True} 
 
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(20), unique=True, nullable=False) # Aceita EAN de 13 dígitos
+    code = db.Column(db.String(20), unique=True, nullable=False) 
     name = db.Column(db.String(100), nullable=False)
     cost_price = db.Column(db.Numeric(10, 2), default=0.00)
     price = db.Column(db.Numeric(10, 2), nullable=False, default=0.00)
@@ -15,11 +15,15 @@ class Product(db.Model):
     category = db.Column(db.String(50))
     unit = db.Column(db.String(10), default='UN')
     
+    # CAMPOS FISCAIS
+    ncm = db.Column(db.String(10), default='00000000')
+    cfop = db.Column(db.String(4), default='5102')
+    
+    # O relacionamento precisa que a classe StockIn exista abaixo
     stock_history = db.relationship('StockIn', backref='product', lazy=True)
 
     @property
     def final_price(self):
-        """Preço calculado para venda após o desconto"""
         if self.discount > 0:
             return float(self.price) * (1 - (self.discount / 100))
         return float(self.price)
@@ -32,6 +36,7 @@ class Product(db.Model):
         next_code = int(last_product.code) + 1
         return f"{next_code:03d}"
 
+# ESTA É A CLASSE QUE ESTAVA FALTANDO E CAUSANDO O ERRO:
 class StockIn(db.Model):
     __tablename__ = 'stock_ins'
     id = db.Column(db.Integer, primary_key=True)
