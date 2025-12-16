@@ -6,9 +6,11 @@ from datetime import datetime
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.before_request
-def check_admin():
-    if session.get('user_role') != 'admin':
-        flash("Acesso restrito ao administrador.")
+def check_permissions():
+    # Agora permitimos 'admin' OU 'gerente'
+    allowed_roles = ['admin', 'gerente']
+    if session.get('user_role') not in allowed_roles:
+        flash("Acesso restrito. Você não possui permissão para gerenciar usuários.")
         return redirect(url_for('auth.dashboard'))
 
 @admin_bp.route('/users')
@@ -19,55 +21,66 @@ def list_users():
 @admin_bp.route('/users/create', methods=['GET', 'POST'])
 def create_user():
     if request.method == 'POST':
-        # Criação do Usuário
-        new_user = User(
-            username=request.form['username'],
-            password=request.form['password'],
-            role=request.form['role']
-        )
-        db.session.add(new_user)
-        db.session.flush() 
+        try:
+            # Criação do Usuário
+            new_user = User(
+                username=request.form['username'],
+                password=request.form['password'],
+                role=request.form['role']
+            )
+            db.session.add(new_user)
+            db.session.flush() 
 
-        # Criação do Funcionário vinculado
-        new_emp = Employee(
-            name=request.form['name'],
-            cpf=request.form['cpf'],
-            birth_date=datetime.strptime(request.form['birth_date'], '%Y-%m-%d'),
-            cep=request.form['cep'],
-            address=request.form['address'],
-            number=request.form['number'],
-            city=request.form['city'],
-            state=request.form['state'],
-            obs=request.form['obs'],
-            user_id=new_user.id
-        )
-        db.session.add(new_emp)
-        db.session.commit()
-        flash("Usuário e Colaborador criados com sucesso!")
-        return redirect(url_for('admin.list_users'))
+            # Criação do Funcionário vinculado
+            # Usamos .get() para evitar erros se algum campo opcional vier vazio
+            new_emp = Employee(
+                name=request.form.get('name'),
+                cpf=request.form.get('cpf'),
+                birth_date=datetime.strptime(request.form.get('birth_date'), '%Y-%m-%d') if request.form.get('birth_date') else None,
+                cep=request.form.get('cep'),
+                address=request.form.get('address'),
+                number=request.form.get('number'),
+                city=request.form.get('city'),
+                state=request.form.get('state'),
+                obs=request.form.get('obs'),
+                user_id=new_user.id
+            )
+            db.session.add(new_emp)
+            db.session.commit()
+            flash("Usuário e Colaborador criados com sucesso!")
+            return redirect(url_for('admin.list_users'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erro ao cadastrar: {str(e)}")
+            return redirect(url_for('admin.create_user'))
     
     return render_template('users/create.html')
 
 @admin_bp.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
+    
+    # Segurança extra: Gerente não pode editar o Admin Mestre
+    if session.get('user_role') == 'gerente' and user.role == 'admin':
+        flash("Gerentes não podem editar usuários administradores.")
+        return redirect(url_for('admin.list_users'))
+
     if request.method == 'POST':
         user.username = request.form['username']
         user.role = request.form['role']
         
-        # Só altera a senha se o campo não estiver vazio
-        if request.form['password']:
+        if request.form.get('password'):
             user.password = request.form['password']
         
         if user.employee:
-            user.employee.name = request.form['name']
-            user.employee.cpf = request.form['cpf']
-            user.employee.cep = request.form['cep']
-            user.employee.address = request.form['address']
-            user.employee.number = request.form['number']
-            user.employee.city = request.form['city']
-            user.employee.state = request.form['state']
-            user.employee.obs = request.form['obs']
+            user.employee.name = request.form.get('name')
+            user.employee.cpf = request.form.get('cpf')
+            user.employee.cep = request.form.get('cep')
+            user.employee.address = request.form.get('address')
+            user.employee.number = request.form.get('number')
+            user.employee.city = request.form.get('city')
+            user.employee.state = request.form.get('state')
+            user.employee.obs = request.form.get('obs')
             
         db.session.commit()
         flash("Dados atualizados com sucesso!")
@@ -79,9 +92,13 @@ def edit_user(user_id):
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     
-    # Proteção: não deixa deletar o admin principal logado
+    # Proteções de exclusão
     if user.username == 'admin':
         flash("O administrador mestre não pode ser removido.")
+        return redirect(url_for('admin.list_users'))
+    
+    if session.get('user_role') == 'gerente' and user.role == 'admin':
+        flash("Gerentes não podem excluir administradores.")
         return redirect(url_for('admin.list_users'))
 
     if user.employee:

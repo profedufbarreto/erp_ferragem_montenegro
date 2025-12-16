@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
     <script>
-        // Executa antes da página carregar para evitar tela branca no modo escuro
+        // Executa antes da página carregar para evitar o "flash" branco no modo escuro
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark-mode');
         }
@@ -19,14 +19,31 @@
         <nav class="navbar">
             <div class="logo">ERP - AgroFerragem Montenegro</div>
             <div class="menu">
-                <a href="{{ url_for('admin.list_users') }}">Usuários</a>
+                {% if session.get('user_role') in ['admin', 'gerente'] %}
+                    <a href="{{ url_for('admin.list_users') }}">Usuários</a>
+                {% endif %}
+                
                 <a href="#">Vendas</a>
-                <a href="#">Estoque</a>
-                <button id="theme-toggle" class="btn-theme">🌓 Alternar Tema</button>
-                <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; margin-left: 20px;">Sair</a>
+                <a href="{{ url_for('inventory.list_products') }}">Estoque</a>
+                
+                <button id="theme-toggle" class="btn-theme" style="margin-left: 10px;">🌓 Alternar Tema</button>
+                
+                <a href="{{ url_for('auth.logout') }}" style="color: #ff4d4d; margin-left: 20px; text-decoration: none; font-weight: 600;">Sair</a>
             </div>
         </nav>
     </header>
+
+    <div class="container" style="margin-top: 20px; margin-bottom: -20px;">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div style="padding: 15px; background-color: var(--primary-color); color: white; border-radius: 8px; margin-bottom: 10px;">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
 
     <main>
         {% block content %}{% endblock %}

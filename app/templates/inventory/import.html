@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width: 600px; margin: 40px auto;">
+        <h2 style="margin-bottom: 20px; color: var(--primary-color);">📦 Entrada de Estoque por XML</h2>
+        <p style="margin-bottom: 25px; color: var(--text-light); font-size: 0.9rem;">
+            Selecione o arquivo XML da Nota Fiscal para cadastrar produtos e atualizar o estoque automaticamente.
+        </p>
+
+        <form action="{{ url_for('inventory.import_xml') }}" method="POST" enctype="multipart/form-data">
+            <div style="border: 2px dashed var(--border-light); padding: 40px; text-align: center; border-radius: 12px; margin-bottom: 20px;">
+                <input type="file" name="xml_file" id="xml_file" accept=".xml" required style="display: none;">
+                <label for="xml_file" style="cursor: pointer;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">📄</div>
+                    <strong id="file-name">Clique para selecionar o XML</strong>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-success" style="width: 100%;">Processar Nota Fiscal</button>
+            <a href="{{ url_for('inventory.list_products') }}" style="display: block; text-align: center; margin-top: 15px; color: var(--text-light); text-decoration: none;">Ver Produtos Cadastrados</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Mostra o nome do arquivo selecionado na tela
+    document.getElementById('xml_file').onchange = function() {
+        document.getElementById('file-name').innerHTML = this.files[0].name;
+    };
+</script>
+{% endblock %}

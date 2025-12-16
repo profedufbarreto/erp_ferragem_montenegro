@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1 style="font-weight: 800;">Estoque de Produtos</h1>
+        <a href="{{ url_for('inventory.import_xml') }}" class="btn-success">Importar XML</a>
+    </div>
+
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>EAN (Cód. Barras)</th>
+                    <th>Descrição</th>
+                    <th>Preço Custo</th>
+                    <th>Preço Venda</th>
+                    <th>Qtd. Estoque</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><code>{{ product.code_ean }}</code></td>
+                    <td style="font-weight: 600;">{{ product.description }}</td>
+                    <td>R$ {{ "%.2f"|format(product.cost_price) }}</td>
+                    <td style="color: var(--primary-color); font-weight: 700;">R$ {{ "%.2f"|format(product.sale_price) }}</td>
+                    <td>{{ product.stock_quantity }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px;">Nenhum produto cadastrado. Importe um XML para começar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
